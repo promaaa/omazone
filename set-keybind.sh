@@ -10,20 +10,23 @@ if [ ! -f "$FILE" ]; then
   exit 2
 fi
 
-if ! grep -qF "$MARKER" "$FILE"; then
-  echo "ERROR: Omazone keybind line not found in $FILE" >&2
-  exit 2
-fi
-
 BACKUP="$FILE.bak.$(date +%s)"
 cp "$FILE" "$BACKUP"
 
-awk -v marker="$MARKER" -v combo="$NEWCOMBO" '
-  index($0, marker) {
-    sub(/o\.bind\("[^"]*"/, "o.bind(\"" combo "\"")
-  }
-  { print }
-' "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
+if grep -qF "$MARKER" "$FILE"; then
+  awk -v marker="$MARKER" -v combo="$NEWCOMBO" '
+    index($0, marker) {
+      sub(/o\.bind\("[^"]*"/, "o.bind(\"" combo "\"")
+    }
+    { print }
+  ' "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
+else
+  cat <<EOF >> "$FILE"
+
+-- Omazone multi-timezone popup
+o.bind("$NEWCOMBO", "Omazone", "$MARKER")
+EOF
+fi
 
 hyprctl reload >/dev/null
 

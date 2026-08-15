@@ -27,7 +27,7 @@ at once.
 ## Install
 
 ```
-omarchy plugin add https://github.com/weedwhitesandwine/omazone.git --enable
+omarchy plugin add https://github.com/promaaa/omazone.git --enable
 ```
 
 Run in a real terminal, this asks which bar section to place the icon in

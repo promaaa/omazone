@@ -18,7 +18,11 @@ Panel {
   readonly property string stateDir: homeDir + "/.local/state/omarchy/omazone"
   readonly property string settingsPath: stateDir + "/settings.json"
 
-  property var zoneIds: []
+  readonly property color contentForeground: bar ? bar.foreground : Color.foreground
+  readonly property string contentFontFamily: bar ? bar.fontFamily : Style.font.family
+  readonly property color subtleForeground: Qt.rgba(contentForeground.r, contentForeground.g, contentForeground.b, 0.65)
+
+  property var zoneIds: ["Europe/Paris", "Asia/Seoul"]
   property var zoneMeta: ({})
   property bool use24h: true
   property string keybind: "SUPER + I"
@@ -106,7 +110,8 @@ Panel {
   function loadSettings(json) {
     var parsed = {}
     try { parsed = JSON.parse(json || "{}") } catch (e) { parsed = {} }
-    if (Array.isArray(parsed.zoneIds)) root.zoneIds = parsed.zoneIds
+    if (Array.isArray(parsed.zoneIds) && parsed.zoneIds.length > 0) root.zoneIds = parsed.zoneIds
+    else if (!Array.isArray(parsed.zoneIds) || parsed.zoneIds.length === 0) root.zoneIds = ["Europe/Paris", "Asia/Seoul"]
     if (parsed.zoneMeta && typeof parsed.zoneMeta === "object") root.zoneMeta = parsed.zoneMeta
     if (typeof parsed.use24h === "boolean") root.use24h = parsed.use24h
     if (typeof parsed.keybind === "string" && parsed.keybind !== "") root.keybind = parsed.keybind
@@ -366,9 +371,9 @@ Panel {
             id: titleText
             anchors.verticalCenter: parent.verticalCenter
             text: "Omazone"
-            color: root.barForeground
+            color: root.contentForeground
             font.bold: true
-            font.family: root.bar ? root.bar.fontFamily : Style.font.family
+            font.family: root.contentFontFamily
             font.pixelSize: Style.font.subtitle
           }
 
@@ -382,7 +387,8 @@ Panel {
             anchors.verticalCenter: parent.verticalCenter
             iconText: root.settingsOpen ? "✕" : "󰒓"
             tooltipText: root.settingsOpen ? "Back to cities" : "Settings"
-            foreground: root.barForeground
+            foreground: root.contentForeground
+            fontFamily: root.contentFontFamily
             onClicked: root.settingsOpen = !root.settingsOpen
           }
         }
@@ -406,7 +412,11 @@ Panel {
             width: bodyFlick.width
             spacing: Style.space(10)
 
-            PanelSectionHeader { text: "TIME TRAVEL"; foreground: root.barForeground }
+            PanelSectionHeader {
+              text: "TIME TRAVEL"
+              foreground: root.contentForeground
+              fontFamily: root.contentFontFamily
+            }
 
             Row {
               width: parent.width
@@ -416,7 +426,8 @@ Panel {
                 id: travelLabel
                 anchors.verticalCenter: parent.verticalCenter
                 text: Model.formatOffset(root.travelOffsetMinutes)
-                color: root.barForeground
+                color: root.contentForeground
+                font.family: root.contentFontFamily
                 font.bold: true
                 font.pixelSize: Style.font.body
               }
@@ -431,7 +442,8 @@ Panel {
                 anchors.verticalCenter: parent.verticalCenter
                 iconText: "⟲"
                 tooltipText: "Reset to now"
-                foreground: root.barForeground
+                foreground: root.contentForeground
+                fontFamily: root.contentFontFamily
                 enabled: root.travelOffsetMinutes !== 0
                 onClicked: root.travelOffsetMinutes = 0
               }
@@ -457,18 +469,20 @@ Panel {
                 if (!l || l.date === undefined) return ""
                 return l.weekday + " " + l.date + " · " + (root.use24h ? l.time24 : (l.time12 + " " + l.ampm)) + " your local time"
               }
-              color: Qt.darker(root.barForeground, 1.4)
+              color: root.subtleForeground
+              font.family: root.contentFontFamily
               font.pixelSize: Style.font.caption
               wrapMode: Text.Wrap
             }
 
-            PanelSeparator { foreground: root.barForeground }
+            PanelSeparator { foreground: root.contentForeground }
 
             Text {
               visible: root.zoneIds.length === 0
               width: parent.width
               text: "No cities yet — add some from Settings (" + "⚙" + ")."
-              color: Qt.darker(root.barForeground, 1.5)
+              color: root.subtleForeground
+              font.family: root.contentFontFamily
               font.pixelSize: Style.font.bodySmall
               wrapMode: Text.Wrap
             }
@@ -494,7 +508,8 @@ Panel {
                     id: emojiField
                     width: Style.space(46)
                     text: root.editEmoji
-                    foreground: root.barForeground
+                    foreground: root.contentForeground
+                    font.family: root.contentFontFamily
                     horizontalAlignment: Text.AlignHCenter
                     onTextChanged: root.editEmoji = text
                   }
@@ -503,7 +518,8 @@ Panel {
                     id: labelField
                     width: editRow.width - emojiField.width - saveBtn.width - cancelBtn.width - editRow.spacing * 3
                     text: root.editLabel
-                    foreground: root.barForeground
+                    foreground: root.contentForeground
+                    font.family: root.contentFontFamily
                     placeholderText: Model.friendlyName(rowItem.modelData)
                     onTextChanged: root.editLabel = text
                   }
@@ -512,7 +528,8 @@ Panel {
                     id: saveBtn
                     iconText: "✓"
                     tooltipText: "Save"
-                    foreground: root.barForeground
+                    foreground: root.contentForeground
+                    fontFamily: root.contentFontFamily
                     onClicked: root.saveEdit()
                   }
 
@@ -520,7 +537,8 @@ Panel {
                     id: cancelBtn
                     iconText: "✕"
                     tooltipText: "Cancel"
-                    foreground: root.barForeground
+                    foreground: root.contentForeground
+                    fontFamily: root.contentFontFamily
                     onClicked: root.cancelEdit()
                   }
                 }
@@ -548,13 +566,15 @@ Panel {
 
                       Text {
                         text: root.zoneLabel(rowItem.modelData)
-                        color: root.barForeground
+                        color: root.contentForeground
+                        font.family: root.contentFontFamily
                         font.bold: true
                         font.pixelSize: Style.font.body
                       }
                       Text {
                         text: Model.regionName(rowItem.modelData)
-                        color: Qt.darker(root.barForeground, 1.5)
+                        color: root.subtleForeground
+                        font.family: root.contentFontFamily
                         font.pixelSize: Style.font.caption
                       }
                     }
@@ -577,7 +597,8 @@ Panel {
 
                       Text {
                         text: root.zoneTimeText(rowItem.modelData)
-                        color: root.barForeground
+                        color: root.contentForeground
+                        font.family: root.contentFontFamily
                         font.bold: true
                         font.pixelSize: Style.font.subtitle
                       }
@@ -585,6 +606,7 @@ Panel {
                         visible: text !== ""
                         text: root.zoneBadge(rowItem.modelData)
                         color: Color.accent
+                        font.family: root.contentFontFamily
                         font.bold: true
                         font.pixelSize: Style.font.caption
                       }
@@ -593,7 +615,8 @@ Panel {
                     Text {
                       anchors.right: parent.right
                       text: root.zoneSubText(rowItem.modelData)
-                      color: Qt.darker(root.barForeground, 1.5)
+                      color: root.subtleForeground
+                      font.family: root.contentFontFamily
                       font.pixelSize: Style.font.caption
                     }
                   }
@@ -606,25 +629,29 @@ Panel {
                     PanelActionButton {
                       iconText: "↑"
                       tooltipText: "Move up"
-                      foreground: root.barForeground
+                      foreground: root.contentForeground
+                      fontFamily: root.contentFontFamily
                       onClicked: root.moveZone(rowItem.modelData, -1)
                     }
                     PanelActionButton {
                       iconText: "↓"
                       tooltipText: "Move down"
-                      foreground: root.barForeground
+                      foreground: root.contentForeground
+                      fontFamily: root.contentFontFamily
                       onClicked: root.moveZone(rowItem.modelData, 1)
                     }
                     PanelActionButton {
                       iconText: "✎"
                       tooltipText: "Edit icon & label"
-                      foreground: root.barForeground
+                      foreground: root.contentForeground
+                      fontFamily: root.contentFontFamily
                       onClicked: root.beginEdit(rowItem.modelData)
                     }
                     PanelActionButton {
                       iconText: "✕"
                       tooltipText: "Remove"
-                      foreground: root.barForeground
+                      foreground: root.contentForeground
+                      fontFamily: root.contentFontFamily
                       hoverColor: Color.urgent
                       onClicked: root.removeZone(rowItem.modelData)
                     }
@@ -640,7 +667,11 @@ Panel {
             width: bodyFlick.width
             spacing: Style.space(14)
 
-            PanelSectionHeader { text: "CITIES"; foreground: root.barForeground }
+            PanelSectionHeader {
+              text: "CITIES"
+              foreground: root.contentForeground
+              fontFamily: root.contentFontFamily
+            }
 
             MultiSelect {
               width: parent.width
@@ -650,34 +681,43 @@ Panel {
               placeholderText: "Search timezones…"
               emptyText: "No matches"
               noSelectionText: "None selected"
-              foreground: root.barForeground
+              foreground: root.contentForeground
               accent: Color.accent
-              fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
+              fontFamily: root.contentFontFamily
               onChanged: function(values) { root.zoneIds = values }
             }
 
-            PanelSeparator { foreground: root.barForeground }
+            PanelSeparator { foreground: root.contentForeground }
 
-            PanelSectionHeader { text: "FORMAT"; foreground: root.barForeground }
+            PanelSectionHeader {
+              text: "FORMAT"
+              foreground: root.contentForeground
+              fontFamily: root.contentFontFamily
+            }
 
             Toggle {
               width: parent.width
               label: "24-hour time"
               description: root.use24h ? "14:30" : "2:30 PM"
               checked: root.use24h
-              foreground: root.barForeground
+              foreground: root.contentForeground
+              fontFamily: root.contentFontFamily
               onClicked: root.use24h = !root.use24h
             }
 
-            PanelSeparator { foreground: root.barForeground }
+            PanelSeparator { foreground: root.contentForeground }
 
-            PanelSectionHeader { text: "KEYBIND"; foreground: root.barForeground }
+            PanelSectionHeader {
+              text: "KEYBIND"
+              foreground: root.contentForeground
+              fontFamily: root.contentFontFamily
+            }
 
             Button {
               text: root.recording ? (root.pendingCombo !== "" ? root.pendingCombo : "Press keys…") : root.keybind
               bordered: true
-              foreground: root.barForeground
-              fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
+              foreground: root.contentForeground
+              fontFamily: root.contentFontFamily
               onClicked: root.recording ? root.cancelRecording() : root.beginRecording()
             }
 
@@ -692,7 +732,8 @@ Panel {
             Text {
               visible: root.recording
               text: "Press a shortcut with one modifier (e.g. Super+T). Esc to cancel."
-              color: Qt.darker(root.barForeground, 1.4)
+              color: root.subtleForeground
+              font.family: root.contentFontFamily
               font.pixelSize: Style.font.bodySmall
               wrapMode: Text.Wrap
               width: parent.width
@@ -702,6 +743,7 @@ Panel {
               visible: root.recordError !== ""
               text: root.recordError
               color: Color.urgent
+              font.family: root.contentFontFamily
               font.pixelSize: Style.font.bodySmall
               wrapMode: Text.Wrap
               width: parent.width
@@ -714,13 +756,15 @@ Panel {
               Button {
                 text: "Apply"
                 bordered: true
-                foreground: root.barForeground
+                foreground: root.contentForeground
+                fontFamily: root.contentFontFamily
                 onClicked: root.confirmRecording()
               }
               Button {
                 text: "Cancel"
                 bordered: true
-                foreground: root.barForeground
+                foreground: root.contentForeground
+                fontFamily: root.contentFontFamily
                 onClicked: root.cancelRecording()
               }
             }
@@ -728,13 +772,15 @@ Panel {
             Text {
               visible: root.applyStatus === "applying"
               text: "Applying…"
-              color: Qt.darker(root.barForeground, 1.4)
+              color: root.subtleForeground
+              font.family: root.contentFontFamily
               font.pixelSize: Style.font.bodySmall
             }
             Text {
               visible: root.applyStatus === "error"
               text: "Failed: " + root.applyError
               color: Color.urgent
+              font.family: root.contentFontFamily
               font.pixelSize: Style.font.bodySmall
               wrapMode: Text.Wrap
               width: parent.width
