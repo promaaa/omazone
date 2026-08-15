@@ -30,10 +30,12 @@ at once.
 omarchy plugin add https://github.com/weedwhitesandwine/omazone.git --enable
 ```
 
-Add the bar icon (optional):
+Run in a real terminal, this asks which bar section to place the icon in
+(left/center/right, right pre-selected) before enabling it — the same
+prompt any other bar-widget plugin gives you. Change your mind later with:
 
 ```
-omarchy bar put io.github.weedwhitesandwine.omazone --section right
+omarchy bar move io.github.weedwhitesandwine.omazone --section left
 ```
 
 Add a keybind, e.g. in `~/.config/hypr/bindings.lua`:
