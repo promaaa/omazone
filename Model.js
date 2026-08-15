@@ -42,7 +42,7 @@ var CITY_ICONS = {
   "Asia/Shanghai": "🐉",
   "Asia/Hong_Kong": "🥟",
   "Asia/Singapore": "🦁",
-  "Asia/Seoul": "🍜",
+  "Asia/Seoul": "🇰🇷",
   "Asia/Bangkok": "🛺",
   "Asia/Jakarta": "🌋",
   "Asia/Taipei": "🧋",

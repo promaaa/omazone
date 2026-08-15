@@ -22,7 +22,7 @@ Panel {
   readonly property string contentFontFamily: bar ? bar.fontFamily : Style.font.family
   readonly property color subtleForeground: Qt.rgba(contentForeground.r, contentForeground.g, contentForeground.b, 0.65)
 
-  property var zoneIds: ["Europe/Paris", "Asia/Seoul"]
+  property var zoneIds: ["Europe/Paris", "Asia/Seoul", "America/New_York", "America/Los_Angeles"]
   property var zoneMeta: ({})
   property bool use24h: true
   property string keybind: "SUPER + I"
@@ -111,7 +111,7 @@ Panel {
     var parsed = {}
     try { parsed = JSON.parse(json || "{}") } catch (e) { parsed = {} }
     if (Array.isArray(parsed.zoneIds) && parsed.zoneIds.length > 0) root.zoneIds = parsed.zoneIds
-    else if (!Array.isArray(parsed.zoneIds) || parsed.zoneIds.length === 0) root.zoneIds = ["Europe/Paris", "Asia/Seoul"]
+    else if (!Array.isArray(parsed.zoneIds) || parsed.zoneIds.length === 0) root.zoneIds = ["Europe/Paris", "Asia/Seoul", "America/New_York", "America/Los_Angeles"]
     if (parsed.zoneMeta && typeof parsed.zoneMeta === "object") root.zoneMeta = parsed.zoneMeta
     if (typeof parsed.use24h === "boolean") root.use24h = parsed.use24h
     if (typeof parsed.keybind === "string" && parsed.keybind !== "") root.keybind = parsed.keybind
