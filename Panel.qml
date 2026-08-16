@@ -410,9 +410,9 @@ Panel {
 
             PanelActionButton {
               id: visBtn
-              iconText: root.showClocksOnBar ? "󰖟" : "󰈈"
+              iconText: root.showClocksOnBar ? "󰈈" : "󰈉"
               tooltipText: root.showClocksOnBar ? "Collapse to globe icon on bar" : "Show timezone clocks on bar"
-              foreground: root.contentForeground
+              foreground: root.showClocksOnBar ? root.contentForeground : Qt.rgba(root.contentForeground.r, root.contentForeground.g, root.contentForeground.b, 0.5)
               fontFamily: root.contentFontFamily
               onClicked: {
                 root.showClocksOnBar = !root.showClocksOnBar
