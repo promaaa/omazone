@@ -6,11 +6,12 @@ A multi-timezone clock for [Omarchy](https://omarchy.org/) that displays live ti
 
 ## Features
 
-- **Live Top-Bar Clocks** — see your chosen timezones right on the status bar (e.g. `🇫🇷 09:22  🇰🇷 16:22  🇲🇽 01:22`). Compact, lightweight, and takes minimal space.
+- **Live Top-Bar Clocks** — see your chosen timezones right on the status bar (e.g. `🇫🇷 09:27  🇰🇷 16:27  🇲🇽 01:27`). Compact, lightweight, and takes minimal space.
+- **Show / Hide from Status Bar** — easily toggle whether Omazone is visible on your status bar. When hidden from the bar, it takes 0px and can still be opened anytime via keyboard shortcut or CLI.
 - **Multiple Bar Display Styles**:
-  - `Compact (Flags)`: Flag/emoji + time (e.g. `🇫🇷 09:22 · 🇰🇷 16:22 · 🇲🇽 01:22`).
-  - `Airport Codes`: 3-letter city codes (e.g. `PAR 09:22 · SEL 16:22 · MEX 01:22`).
-  - `City Names`: Custom city labels (e.g. `Paris 09:22 · Seoul 16:22 · Mexico 01:22`).
+  - `Compact (Flags)`: Flag/emoji + time (`🇫🇷 09:27 · 🇰🇷 16:27 · 🇲🇽 01:27`).
+  - `Airport Codes`: 3-letter city codes (`PAR 09:27 · SEL 16:27 · MEX 01:27`).
+  - `City Names`: Custom city labels (`Paris 09:27 · Seoul 16:27 · Mexico 01:27`).
   - `Single Zone (Cycling)`: Displays one zone at a time and cycles every 5 seconds.
   - `Icon Only`: Classic globe icon (`󰖟`).
 - **Comprehensive Timezone Coverage** — full support for Mexican timezones (`America/Mexico_City`, `America/Cancun`, `America/Tijuana`, `America/Monterrey`, `America/Hermosillo`, etc.), French, Korean, US, European, and worldwide IANA timezones.
@@ -18,7 +19,7 @@ A multi-timezone clock for [Omarchy](https://omarchy.org/) that displays live ti
 - **Interactive Bar Controls**:
   - *Left click*: Open / close the Time Travel dropdown panel.
   - *Middle click*: Cycle through bar display styles.
-  - *Right click*: Quick toggle between 12-hour and 24-hour time.
+  - *Right click*: Quick toggle between 12-hour and 24-hour time format.
   - *Mouse wheel*: Cycle active zone when in cycling mode.
 - **Time Travel slider** — drag it and every tracked city's clock updates together, so you can preview a meeting time or a future moment across all of them at once. Shows a +1/−1 badge when a city has rolled into a different calendar day.
 - **Customizable icons & labels** — edit icons (flags or emoji) and labels for each city.
@@ -54,13 +55,16 @@ This deletes the plugin and cleans up its bar widget automatically. Your tracked
 
 ## Usage
 
-- **Open/close**: your keybind, clicking the bar widget, or `omarchy-shell shell toggle io.github.weedwhitesandwine.omazone`.
+- **Open/close**: your keybind (default `SUPER + I`), clicking the bar widget, or `omarchy-shell shell toggle io.github.weedwhitesandwine.omazone`.
 - **Bar quick-actions**:
   - Left click: toggle panel
   - Middle click: cycle bar display styles (`Compact` -> `Codes` -> `Names` -> `Cycle` -> `Icon`)
   - Right click: toggle 12h/24h time format
+- **Show/hide bar widget**:
+  - In Settings: toggle "Show on status bar"
+  - Via CLI: `omarchy-shell shell io.github.weedwhitesandwine.omazone toggleBar` (or `hideBar` / `showBar`)
 - **Click the gear icon (⚙)** in the panel header to open settings:
-  - **Bar Display** — choose your display style, toggle the globe icon prefix, or toggle +1/−1 day offset badges.
+  - **Bar Display** — toggle bar visibility, choose display style, toggle globe icon prefix, or toggle +1/−1 day offset badges.
   - **Cities** — search and check off any number of timezones to track.
   - **Format** — 12-hour or 24-hour time.
   - **Keybind** — record a new shortcut (with one modifier) and apply it safely.
@@ -73,7 +77,7 @@ This plugin runs `bash`, `date`, `timedatectl`, `jq`, and `hyprctl` via Quickshe
 
 ## State files
 
-- `~/.local/state/omarchy/omazone/settings.json` — tracked cities, custom icons/labels, 12/24-hour preference, bar style, and keybind.
+- `~/.local/state/omarchy/omazone/settings.json` — tracked cities, custom icons/labels, 12/24-hour preference, bar style, bar visibility, and keybind.
 
 ## License
 

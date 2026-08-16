@@ -22,13 +22,14 @@ BarWidget {
   readonly property string barStyle: panel && panel.barStyle ? panel.barStyle : "compact"
   readonly property bool showGlobeIcon: panel ? panel.showGlobeIcon : false
   readonly property bool showDayBadge: panel ? panel.showDayBadge : true
+  readonly property bool showOnBar: panel ? (panel.showOnBar !== false) : true
 
   property int cycleIndex: 0
 
   Timer {
     id: cycleTimer
     interval: 5000
-    running: root.barStyle === "cycle" && root.zoneIds.length > 1
+    running: root.showOnBar && root.barStyle === "cycle" && root.zoneIds.length > 1
     repeat: true
     onTriggered: {
       if (root.zoneIds.length > 0)
@@ -65,6 +66,20 @@ BarWidget {
   function toggle24h() {
     if (panelLoader.item) {
       panelLoader.item.use24h = !panelLoader.item.use24h
+      panelLoader.item.scheduleSettingsSave()
+    }
+  }
+
+  function toggleBarVisibility() {
+    if (panelLoader.item) {
+      panelLoader.item.showOnBar = !panelLoader.item.showOnBar
+      panelLoader.item.scheduleSettingsSave()
+    }
+  }
+
+  function setBarVisibility(v) {
+    if (panelLoader.item) {
+      panelLoader.item.showOnBar = !!v
       panelLoader.item.scheduleSettingsSave()
     }
   }
@@ -134,8 +149,9 @@ BarWidget {
   readonly property real openPanelIndicatorWidth: Math.max(Style.space(12), Math.min(button.width * 0.65, Style.space(64)))
   readonly property real openPanelIndicatorHeight: Math.max(Style.space(10), Math.round(Style.bar.iconSlot * 0.55))
 
-  implicitWidth: button.implicitWidth
-  implicitHeight: button.implicitHeight
+  visible: root.showOnBar
+  implicitWidth: root.showOnBar ? button.implicitWidth : 0
+  implicitHeight: root.showOnBar ? button.implicitHeight : 0
 
   onBarChanged: injectPanel()
 
@@ -159,14 +175,18 @@ BarWidget {
     function toggle(): void { root.toggle() }
     function cycleStyle(): void { root.cycleBarStyle() }
     function toggleFormat(): void { root.toggle24h() }
+    function toggleBar(): void { root.toggleBarVisibility() }
+    function hideBar(): void { root.setBarVisibility(false) }
+    function showBar(): void { root.setBarVisibility(true) }
   }
 
   WidgetButton {
     id: button
     anchors.fill: parent
     bar: root.bar
+    visible: root.showOnBar
     labelVisible: false
-    hasVisualContent: true
+    hasVisualContent: root.showOnBar
     horizontalMargin: 14
     verticalPadding: 6
     tooltipText: root.barTooltipText
@@ -187,7 +207,7 @@ BarWidget {
 
     Row {
       id: contentRow
-      visible: !root.vertical
+      visible: !root.vertical && root.showOnBar
       anchors.centerIn: parent
       spacing: Style.space(6)
 
@@ -320,7 +340,7 @@ BarWidget {
     // Vertical bar layout
     Column {
       id: verticalContent
-      visible: root.vertical
+      visible: root.vertical && root.showOnBar
       anchors.centerIn: parent
       spacing: Style.space(2)
 

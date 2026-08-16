@@ -33,6 +33,7 @@ Panel {
   property string barStyle: "compact"
   property bool showGlobeIcon: false
   property bool showDayBadge: true
+  property bool showOnBar: true
   property bool settingsLoaded: false
 
   property bool settingsOpen: false
@@ -125,6 +126,7 @@ Panel {
     if (typeof parsed.barStyle === "string" && parsed.barStyle !== "") root.barStyle = parsed.barStyle
     if (typeof parsed.showGlobeIcon === "boolean") root.showGlobeIcon = parsed.showGlobeIcon
     if (typeof parsed.showDayBadge === "boolean") root.showDayBadge = parsed.showDayBadge
+    if (typeof parsed.showOnBar === "boolean") root.showOnBar = parsed.showOnBar
     root.settingsLoaded = true
     root.refreshTimes()
   }
@@ -141,7 +143,8 @@ Panel {
       keybind: root.keybind,
       barStyle: root.barStyle,
       showGlobeIcon: root.showGlobeIcon,
-      showDayBadge: root.showDayBadge
+      showDayBadge: root.showDayBadge,
+      showOnBar: root.showOnBar
     }, null, 2) + "\n")
   }
 
@@ -151,6 +154,7 @@ Panel {
   onBarStyleChanged: scheduleSettingsSave()
   onShowGlobeIconChanged: scheduleSettingsSave()
   onShowDayBadgeChanged: scheduleSettingsSave()
+  onShowOnBarChanged: scheduleSettingsSave()
 
   Component.onCompleted: {
     ensureDirsProc.running = true
@@ -363,6 +367,7 @@ Panel {
     anchorItem: root.anchorItem
     owner: root.hostWidget || root
     bar: root.bar
+    centerOnBar: !root.showOnBar
     open: root.opened
     focusTarget: keyCatcher
     contentWidth: panel.fittedContentWidth(Style.space(360))
@@ -689,7 +694,18 @@ Panel {
               fontFamily: root.contentFontFamily
             }
 
+            Toggle {
+              width: parent.width
+              label: "Show on status bar"
+              description: root.showOnBar ? "Visible on top bar" : "Hidden from bar (open via keybind " + root.keybind + ")"
+              checked: root.showOnBar
+              foreground: root.contentForeground
+              fontFamily: root.contentFontFamily
+              onClicked: root.showOnBar = !root.showOnBar
+            }
+
             Dropdown {
+              visible: root.showOnBar
               width: parent.width
               label: "Bar display style"
               value: root.barStyle
@@ -707,6 +723,7 @@ Panel {
             }
 
             Toggle {
+              visible: root.showOnBar && root.barStyle !== "icon"
               width: parent.width
               label: "Show globe icon in bar"
               description: "Show 󰖟 prefix icon before timezone clocks"
@@ -717,6 +734,7 @@ Panel {
             }
 
             Toggle {
+              visible: root.showOnBar && root.barStyle !== "icon"
               width: parent.width
               label: "Show day difference badge"
               description: "Show +1 / −1 when a city is on a different day"
