@@ -6,14 +6,14 @@ A multi-timezone clock for [Omarchy](https://omarchy.org/) that displays live ti
 
 ## Features
 
-- **Live Top-Bar Clocks** — see your chosen timezones right on the status bar (e.g. `🇫🇷 09:27  🇰🇷 16:27  🇲🇽 01:27`). Compact, lightweight, and takes minimal space.
-- **Show / Hide from Status Bar** — easily toggle whether Omazone is visible on your status bar. When hidden from the bar, it takes 0px and can still be opened anytime via keyboard shortcut or CLI.
+- **Live Top-Bar Clocks** — see your chosen timezones right on the status bar (e.g. `🇫🇷 09:32  🇰🇷 16:32  🇲🇽 01:32`). Compact, lightweight, and takes minimal space.
+- **Collapse to Globe Icon (󰖟)** — easily toggle between showing full timezone clocks or collapsing to a minimal globe icon on the bar, so it always remains clickable and accessible.
 - **Multiple Bar Display Styles**:
-  - `Compact (Flags)`: Flag/emoji + time (`🇫🇷 09:27 · 🇰🇷 16:27 · 🇲🇽 01:27`).
-  - `Airport Codes`: 3-letter city codes (`PAR 09:27 · SEL 16:27 · MEX 01:27`).
-  - `City Names`: Custom city labels (`Paris 09:27 · Seoul 16:27 · Mexico 01:27`).
+  - `Compact (Flags)`: Flag/emoji + time (`🇫🇷 09:32 · 🇰🇷 16:32 · 🇲🇽 01:32`).
+  - `Airport Codes`: 3-letter city codes (`PAR 09:32 · SEL 16:32 · MEX 01:32`).
+  - `City Names`: Custom city labels (`Paris 09:32 · Seoul 16:32 · Mexico 01:32`).
   - `Single Zone (Cycling)`: Displays one zone at a time and cycles every 5 seconds.
-  - `Icon Only`: Classic globe icon (`󰖟`).
+  - `Globe Icon Only`: Minimal single globe icon (`󰖟`).
 - **Comprehensive Timezone Coverage** — full support for Mexican timezones (`America/Mexico_City`, `America/Cancun`, `America/Tijuana`, `America/Monterrey`, `America/Hermosillo`, etc.), French, Korean, US, European, and worldwide IANA timezones.
 - **Rich Bar Tooltip** — hover over the bar widget to see full city names, local times, timezone abbreviations, and UTC offsets.
 - **Interactive Bar Controls**:
@@ -55,17 +55,17 @@ This deletes the plugin and cleans up its bar widget automatically. Your tracked
 
 ## Usage
 
-- **Open/close**: your keybind (default `SUPER + I`), clicking the bar widget, or `omarchy-shell shell toggle io.github.weedwhitesandwine.omazone`.
+- **Open/close**: your keybind (default `SUPER + I`), clicking the bar widget (clocks or globe icon), or `omarchy-shell shell toggle io.github.weedwhitesandwine.omazone`.
 - **Bar quick-actions**:
   - Left click: toggle panel
-  - Middle click: cycle bar display styles (`Compact` -> `Codes` -> `Names` -> `Cycle` -> `Icon`)
+  - Middle click: cycle bar display styles (`Compact` -> `Codes` -> `Names` -> `Cycle`)
   - Right click: toggle 12h/24h time format
-- **Show/hide bar widget**:
-  - In the panel header: click the eye icon (󰈈 / 󰈉) to instantly toggle bar visibility with one click
-  - In Settings: toggle "Show on status bar"
-  - Via CLI: `omarchy-shell io.github.weedwhitesandwine.omazone toggleBar` (or `hideBar` / `showBar`)
+- **Show clocks vs Globe icon**:
+  - In the panel header: click the globe / clock toggle icon to switch between expanded timezone clocks and the minimal globe icon with 1 click.
+  - In Settings: toggle "Show clocks on status bar".
+  - Via CLI: `omarchy-shell io.github.weedwhitesandwine.omazone toggleClocks`.
 - **Click the gear icon (⚙)** in the panel header to open settings:
-  - **Bar Display** — toggle bar visibility, choose display style, toggle globe icon prefix, or toggle +1/−1 day offset badges.
+  - **Bar Display** — toggle clocks display, choose display style, toggle globe icon prefix, or toggle +1/−1 day offset badges.
   - **Cities** — search and check off any number of timezones to track.
   - **Format** — 12-hour or 24-hour time.
   - **Keybind** — record a new shortcut (with one modifier) and apply it safely.
@@ -78,7 +78,7 @@ This plugin runs `bash`, `date`, `timedatectl`, `jq`, and `hyprctl` via Quickshe
 
 ## State files
 
-- `~/.local/state/omarchy/omazone/settings.json` — tracked cities, custom icons/labels, 12/24-hour preference, bar style, bar visibility, and keybind.
+- `~/.local/state/omarchy/omazone/settings.json` — tracked cities, custom icons/labels, 12/24-hour preference, bar style, showClocksOnBar, and keybind.
 
 ## License
 

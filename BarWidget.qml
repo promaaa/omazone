@@ -22,14 +22,14 @@ BarWidget {
   readonly property string barStyle: panel && panel.barStyle ? panel.barStyle : "compact"
   readonly property bool showGlobeIcon: panel ? panel.showGlobeIcon : false
   readonly property bool showDayBadge: panel ? panel.showDayBadge : true
-  readonly property bool showOnBar: panel ? (panel.showOnBar !== false) : true
+  readonly property bool showClocksOnBar: panel ? (panel.showClocksOnBar !== false && panel.barStyle !== "icon") : true
 
   property int cycleIndex: 0
 
   Timer {
     id: cycleTimer
     interval: 5000
-    running: root.showOnBar && root.barStyle === "cycle" && root.zoneIds.length > 1
+    running: root.showClocksOnBar && root.barStyle === "cycle" && root.zoneIds.length > 1
     repeat: true
     onTriggered: {
       if (root.zoneIds.length > 0)
@@ -54,11 +54,12 @@ BarWidget {
   }
 
   function cycleBarStyle() {
-    var styles = ["compact", "codes", "names", "cycle", "icon"]
+    var styles = ["compact", "codes", "names", "cycle"]
     var idx = styles.indexOf(root.barStyle)
     var next = styles[(idx + 1) % styles.length]
     if (panelLoader.item) {
       panelLoader.item.barStyle = next
+      panelLoader.item.showClocksOnBar = true
       panelLoader.item.scheduleSettingsSave()
     }
   }
@@ -70,16 +71,9 @@ BarWidget {
     }
   }
 
-  function toggleBarVisibility() {
+  function toggleClocksVisibility() {
     if (panelLoader.item) {
-      panelLoader.item.showOnBar = !panelLoader.item.showOnBar
-      panelLoader.item.scheduleSettingsSave()
-    }
-  }
-
-  function setBarVisibility(v) {
-    if (panelLoader.item) {
-      panelLoader.item.showOnBar = !!v
+      panelLoader.item.showClocksOnBar = !panelLoader.item.showClocksOnBar
       panelLoader.item.scheduleSettingsSave()
     }
   }
@@ -127,6 +121,7 @@ BarWidget {
   }
 
   readonly property string barTooltipText: {
+    if (!root.showClocksOnBar) return "Omazone (Click to open timezone panel)"
     if (!root.zoneIds || root.zoneIds.length === 0) return "Omazone: No tracked cities (Click to add)"
     var lines = ["Omazone Multi-Timezone:"]
     for (var i = 0; i < root.zoneIds.length; i++) {
@@ -149,9 +144,9 @@ BarWidget {
   readonly property real openPanelIndicatorWidth: Math.max(Style.space(12), Math.min(button.width * 0.65, Style.space(64)))
   readonly property real openPanelIndicatorHeight: Math.max(Style.space(10), Math.round(Style.bar.iconSlot * 0.55))
 
-  visible: root.showOnBar
-  implicitWidth: root.showOnBar ? button.implicitWidth : 0
-  implicitHeight: root.showOnBar ? button.implicitHeight : 0
+  visible: true
+  implicitWidth: button.implicitWidth
+  implicitHeight: button.implicitHeight
 
   onBarChanged: injectPanel()
 
@@ -175,22 +170,20 @@ BarWidget {
     function toggle(): void { root.toggle() }
     function cycleStyle(): void { root.cycleBarStyle() }
     function toggleFormat(): void { root.toggle24h() }
-    function toggleBar(): void { root.toggleBarVisibility() }
-    function hideBar(): void { root.setBarVisibility(false) }
-    function showBar(): void { root.setBarVisibility(true) }
+    function toggleClocks(): void { root.toggleClocksVisibility() }
+    function toggleBar(): void { root.toggleClocksVisibility() }
   }
 
   WidgetButton {
     id: button
     anchors.fill: parent
     bar: root.bar
-    visible: root.showOnBar
     labelVisible: false
-    hasVisualContent: root.showOnBar
-    horizontalMargin: 14
+    hasVisualContent: true
+    horizontalMargin: root.showClocksOnBar ? 14 : 6
     verticalPadding: 6
     tooltipText: root.barTooltipText
-    fixedWidth: root.vertical ? -1 : (contentRow.implicitWidth + button.scaledHorizontalMargin * 2)
+    fixedWidth: root.vertical ? -1 : (root.showClocksOnBar ? (contentRow.implicitWidth + button.scaledHorizontalMargin * 2) : Style.bar.iconSlot)
     fixedHeight: root.vertical ? (verticalContent.implicitHeight + button.scaledVerticalPadding * 2) : -1
 
     onPressed: function(b) {
@@ -199,21 +192,32 @@ BarWidget {
       else root.toggle()
     }
     onWheelMoved: function(delta) {
-      if (root.barStyle === "cycle" && root.zoneIds.length > 1) {
+      if (root.showClocksOnBar && root.barStyle === "cycle" && root.zoneIds.length > 1) {
         if (delta > 0) root.cycleIndex = (root.cycleIndex - 1 + root.zoneIds.length) % root.zoneIds.length
         else root.cycleIndex = (root.cycleIndex + 1) % root.zoneIds.length
       }
     }
 
+    // Single Globe Icon (when collapsed / clocks hidden)
+    Text {
+      visible: !root.showClocksOnBar && !root.vertical
+      anchors.centerIn: parent
+      text: "󰖟"
+      color: button.active ? button.activeColor : button.foreground
+      font.family: button.fontFamily
+      font.pixelSize: Style.bar.iconFont
+    }
+
+    // Expanded Clocks Row (when showClocksOnBar is true)
     Row {
       id: contentRow
-      visible: !root.vertical && root.showOnBar
+      visible: root.showClocksOnBar && !root.vertical
       anchors.centerIn: parent
       spacing: Style.space(6)
 
-      // Globe icon prefix if enabled, icon-only mode, or if no cities tracked
+      // Optional globe icon prefix if enabled
       Text {
-        visible: root.showGlobeIcon || root.zoneIds.length === 0 || root.barStyle === "icon"
+        visible: root.showGlobeIcon || root.zoneIds.length === 0
         anchors.verticalCenter: parent.verticalCenter
         text: "󰖟"
         color: button.active ? button.activeColor : button.foreground
@@ -223,7 +227,7 @@ BarWidget {
 
       // Multi-zone horizontal list (compact, codes, or names)
       Row {
-        visible: root.zoneIds.length > 0 && root.barStyle !== "icon" && root.barStyle !== "cycle"
+        visible: root.zoneIds.length > 0 && root.barStyle !== "cycle"
         anchors.verticalCenter: parent.verticalCenter
         spacing: Style.space(8)
 
@@ -340,7 +344,7 @@ BarWidget {
     // Vertical bar layout
     Column {
       id: verticalContent
-      visible: root.vertical && root.showOnBar
+      visible: root.vertical
       anchors.centerIn: parent
       spacing: Style.space(2)
 
@@ -353,7 +357,7 @@ BarWidget {
       }
 
       Repeater {
-        model: root.zoneIds.length > 0 ? root.zoneIds.slice(0, 3) : []
+        model: root.showClocksOnBar && root.zoneIds.length > 0 ? root.zoneIds.slice(0, 3) : []
 
         delegate: Text {
           required property string modelData

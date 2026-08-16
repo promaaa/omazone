@@ -33,7 +33,7 @@ Panel {
   property string barStyle: "compact"
   property bool showGlobeIcon: false
   property bool showDayBadge: true
-  property bool showOnBar: true
+  property bool showClocksOnBar: true
   property bool settingsLoaded: false
 
   property bool settingsOpen: false
@@ -126,7 +126,8 @@ Panel {
     if (typeof parsed.barStyle === "string" && parsed.barStyle !== "") root.barStyle = parsed.barStyle
     if (typeof parsed.showGlobeIcon === "boolean") root.showGlobeIcon = parsed.showGlobeIcon
     if (typeof parsed.showDayBadge === "boolean") root.showDayBadge = parsed.showDayBadge
-    if (typeof parsed.showOnBar === "boolean") root.showOnBar = parsed.showOnBar
+    if (typeof parsed.showClocksOnBar === "boolean") root.showClocksOnBar = parsed.showClocksOnBar
+    else if (typeof parsed.showOnBar === "boolean") root.showClocksOnBar = parsed.showOnBar
     root.settingsLoaded = true
     root.refreshTimes()
   }
@@ -144,7 +145,7 @@ Panel {
       barStyle: root.barStyle,
       showGlobeIcon: root.showGlobeIcon,
       showDayBadge: root.showDayBadge,
-      showOnBar: root.showOnBar
+      showClocksOnBar: root.showClocksOnBar
     }, null, 2) + "\n")
   }
 
@@ -154,7 +155,7 @@ Panel {
   onBarStyleChanged: scheduleSettingsSave()
   onShowGlobeIconChanged: scheduleSettingsSave()
   onShowDayBadgeChanged: scheduleSettingsSave()
-  onShowOnBarChanged: scheduleSettingsSave()
+  onShowClocksOnBarChanged: scheduleSettingsSave()
 
   Component.onCompleted: {
     ensureDirsProc.running = true
@@ -367,7 +368,6 @@ Panel {
     anchorItem: root.anchorItem
     owner: root.hostWidget || root
     bar: root.bar
-    centerOnBar: !root.showOnBar
     open: root.opened
     focusTarget: keyCatcher
     contentWidth: panel.fittedContentWidth(Style.space(360))
@@ -410,12 +410,12 @@ Panel {
 
             PanelActionButton {
               id: visBtn
-              iconText: root.showOnBar ? "󰈈" : "󰈉"
-              tooltipText: root.showOnBar ? "Hide from status bar" : "Show on status bar"
-              foreground: root.showOnBar ? root.contentForeground : Qt.rgba(root.contentForeground.r, root.contentForeground.g, root.contentForeground.b, 0.45)
+              iconText: root.showClocksOnBar ? "󰖟" : "󰈈"
+              tooltipText: root.showClocksOnBar ? "Collapse to globe icon on bar" : "Show timezone clocks on bar"
+              foreground: root.contentForeground
               fontFamily: root.contentFontFamily
               onClicked: {
-                root.showOnBar = !root.showOnBar
+                root.showClocksOnBar = !root.showClocksOnBar
                 root.scheduleSettingsSave()
               }
             }
@@ -714,16 +714,16 @@ Panel {
 
             Toggle {
               width: parent.width
-              label: "Show on status bar"
-              description: root.showOnBar ? "Visible on top bar" : "Hidden from bar (open via keybind " + root.keybind + ")"
-              checked: root.showOnBar
+              label: "Show clocks on status bar"
+              description: root.showClocksOnBar ? "Displaying timezone clocks on bar" : "Collapsed to globe icon (󰖟) on bar"
+              checked: root.showClocksOnBar
               foreground: root.contentForeground
               fontFamily: root.contentFontFamily
-              onClicked: root.showOnBar = !root.showOnBar
+              onClicked: root.showClocksOnBar = !root.showClocksOnBar
             }
 
             Dropdown {
-              visible: root.showOnBar
+              visible: root.showClocksOnBar
               width: parent.width
               label: "Bar display style"
               value: root.barStyle
@@ -731,8 +731,7 @@ Panel {
                 { value: "compact", label: "Compact (🇫🇷 09:22 · 🇰🇷 16:22 · 🇲🇽 01:22)" },
                 { value: "codes", label: "Airport Codes (PAR · SEL · MEX)" },
                 { value: "names", label: "City Names (Paris · Seoul · Mexico)" },
-                { value: "cycle", label: "Single Zone (Cycling every 5s)" },
-                { value: "icon", label: "Icon Only (󰖟)" }
+                { value: "cycle", label: "Single Zone (Cycling every 5s)" }
               ]
               foreground: root.contentForeground
               accent: Color.accent
@@ -741,7 +740,7 @@ Panel {
             }
 
             Toggle {
-              visible: root.showOnBar && root.barStyle !== "icon"
+              visible: root.showClocksOnBar
               width: parent.width
               label: "Show globe icon in bar"
               description: "Show 󰖟 prefix icon before timezone clocks"
@@ -752,7 +751,7 @@ Panel {
             }
 
             Toggle {
-              visible: root.showOnBar && root.barStyle !== "icon"
+              visible: root.showClocksOnBar
               width: parent.width
               label: "Show day difference badge"
               description: "Show +1 / −1 when a city is on a different day"
