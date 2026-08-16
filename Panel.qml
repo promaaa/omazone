@@ -80,7 +80,17 @@ Panel {
   readonly property int effectiveEpoch: nowEpoch + root.travelOffsetMinutes * 60
 
   onEffectiveEpochChanged: root.scheduleRefresh()
-  onZoneIdsChanged: { root.scheduleRefresh(); root.scheduleSettingsSave() }
+  onZoneIdsChanged: {
+    if (citiesMultiSelect) citiesMultiSelect.values = root.zoneIds
+    root.scheduleRefresh()
+    root.scheduleSettingsSave()
+  }
+  onSettingsOpenChanged: {
+    if (settingsOpen && citiesMultiSelect) {
+      citiesMultiSelect.values = root.zoneIds
+      citiesMultiSelect.refresh()
+    }
+  }
 
   Timer {
     id: refreshDebounce
@@ -118,7 +128,7 @@ Panel {
   function loadSettings(json) {
     var parsed = {}
     try { parsed = JSON.parse(json || "{}") } catch (e) { parsed = {} }
-    if (Array.isArray(parsed.zoneIds) && parsed.zoneIds.length > 0) root.zoneIds = parsed.zoneIds
+    if (Array.isArray(parsed.zoneIds)) root.zoneIds = parsed.zoneIds
     else root.zoneIds = ["Europe/Paris", "Asia/Seoul", "America/Mexico_City"]
     if (parsed.zoneMeta && typeof parsed.zoneMeta === "object") root.zoneMeta = parsed.zoneMeta
     if (typeof parsed.use24h === "boolean") root.use24h = parsed.use24h
@@ -129,6 +139,7 @@ Panel {
     if (typeof parsed.showClocksOnBar === "boolean") root.showClocksOnBar = parsed.showClocksOnBar
     else if (typeof parsed.showOnBar === "boolean") root.showClocksOnBar = parsed.showOnBar
     root.settingsLoaded = true
+    if (citiesMultiSelect) citiesMultiSelect.values = root.zoneIds
     root.refreshTimes()
   }
 
@@ -227,11 +238,20 @@ Panel {
   }
 
   function removeZone(id) {
-    root.zoneIds = root.zoneIds.filter(function(z) { return z !== id })
+    var filtered = []
+    for (var i = 0; i < root.zoneIds.length; i++) {
+      if (root.zoneIds[i] !== id) filtered.push(root.zoneIds[i])
+    }
+    root.zoneIds = filtered
     var meta = {}
-    for (var key in root.zoneMeta) if (key !== id) meta[key] = root.zoneMeta[key]
+    for (var key in root.zoneMeta) {
+      if (key !== id) meta[key] = root.zoneMeta[key]
+    }
     root.zoneMeta = meta
     if (root.editingId === id) root.editingId = ""
+    if (citiesMultiSelect) citiesMultiSelect.values = filtered
+    root.scheduleRefresh()
+    root.scheduleSettingsSave()
   }
 
   function moveZone(id, delta) {
@@ -244,6 +264,7 @@ Panel {
     ids[i] = ids[j]
     ids[j] = tmp
     root.zoneIds = ids
+    if (citiesMultiSelect) citiesMultiSelect.values = ids
   }
 
   function isBareModifier(key) {
@@ -770,6 +791,7 @@ Panel {
             }
 
             MultiSelect {
+              id: citiesMultiSelect
               width: parent.width
               label: "Track these cities"
               values: root.zoneIds
@@ -780,7 +802,9 @@ Panel {
               foreground: root.contentForeground
               accent: Color.accent
               fontFamily: root.contentFontFamily
-              onChanged: function(values) { root.zoneIds = values }
+              onChanged: function(values) {
+                root.zoneIds = values
+              }
             }
 
             PanelSeparator { foreground: root.contentForeground }
