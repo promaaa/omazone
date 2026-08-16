@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "id": "io.github.weedwhitesandwine.omazone",
   "name": "Omazone",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "weedwhitesandwine",
   "license": "MIT",
-  "description": "A multi-timezone clock that drops down from the bar. Track any number of cities with custom labels and icons, drag the Time Travel slider to preview a future moment across all of them at once, and rebind the toggle keybind from the settings view. Summon with: omarchy-shell shell toggle io.github.weedwhitesandwine.omazone",
+  "description": "A multi-timezone clock that displays compact timezone clocks directly on the status bar and drops down an interactive time travel panel. Track any number of cities with custom labels, flags, and icons, preview future moments across all time zones at once, and customize the bar display style.",
   "kinds": [
     "bar-widget"
   ],
@@ -14,9 +14,9 @@
   },
   "barWidget": {
     "displayName": "Omazone",
-    "description": "Bar icon that drops down a multi-timezone clock",
+    "description": "Compact multi-timezone status bar clock with time-travel popup",
     "category": "Productivity",
     "allowMultiple": false,
-    "defaultSection": "right"
+    "defaultSection": "center"
   }
 }

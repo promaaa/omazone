@@ -1,59 +1,161 @@
 .pragma library
 
 var CITY_ICONS = {
-  "Asia/Tokyo": "🗼",
-  "America/New_York": "🗽",
-  "America/Los_Angeles": "🎬",
-  "America/Chicago": "🌭",
-  "America/Denver": "🤠",
-  "America/Phoenix": "🌵",
-  "America/Anchorage": "🐻",
-  "Pacific/Honolulu": "🌺",
-  "America/Toronto": "🍁",
-  "America/Vancouver": "🏔",
-  "America/Mexico_City": "🌮",
-  "America/Sao_Paulo": "⚽",
-  "America/Buenos_Aires": "💃",
-  "America/Bogota": "☕",
-  "America/Lima": "🦙",
-  "America/Santiago": "🍷",
-  "America/Havana": "🚗",
-  "Europe/London": "🎡",
-  "Europe/Paris": "🥐",
-  "Europe/Rome": "🏛",
-  "Europe/Madrid": "🥘",
-  "Europe/Berlin": "🍺",
-  "Europe/Amsterdam": "🌷",
-  "Europe/Moscow": "🏰",
-  "Europe/Athens": "🫒",
-  "Europe/Istanbul": "🕌",
-  "Europe/Zurich": "🍫",
-  "Europe/Vienna": "🎻",
-  "Europe/Dublin": "🍀",
-  "Europe/Lisbon": "⚓",
-  "Europe/Stockholm": "❄",
-  "Europe/Oslo": "🎿",
-  "Europe/Copenhagen": "🧜",
-  "Europe/Warsaw": "🎹",
-  "Europe/Prague": "🕰",
-  "Asia/Dubai": "🌇",
-  "Asia/Kolkata": "🛕",
-  "Asia/Calcutta": "🛕",
-  "Asia/Shanghai": "🐉",
-  "Asia/Hong_Kong": "🥟",
-  "Asia/Singapore": "🦁",
+  // Mexico
+  "America/Mexico_City": "🇲🇽",
+  "America/Cancun": "🇲🇽",
+  "America/Tijuana": "🇲🇽",
+  "America/Monterrey": "🇲🇽",
+  "America/Hermosillo": "🇲🇽",
+  "America/Mazatlan": "🇲🇽",
+  "America/Chihuahua": "🇲🇽",
+  "America/Merida": "🇲🇽",
+  "America/Matamoros": "🇲🇽",
+  "America/Bahia_Banderas": "🇲🇽",
+  "America/Ciudad_Juarez": "🇲🇽",
+  "America/Ojinaga": "🇲🇽",
+  "Mexico/BajaNorte": "🇲🇽",
+  "Mexico/BajaSur": "🇲🇽",
+  "Mexico/General": "🇲🇽",
+
+  // Asia & Pacific
   "Asia/Seoul": "🇰🇷",
-  "Asia/Bangkok": "🛺",
-  "Asia/Jakarta": "🌋",
-  "Asia/Taipei": "🧋",
-  "Asia/Jerusalem": "🕍",
-  "Asia/Riyadh": "🏜",
-  "Australia/Sydney": "🦘",
-  "Pacific/Auckland": "🥝",
-  "Africa/Cairo": "🐫",
-  "Africa/Johannesburg": "🦓",
-  "Africa/Lagos": "🥁",
-  "Africa/Nairobi": "🦒"
+  "Asia/Tokyo": "🇯🇵",
+  "Asia/Shanghai": "🇨🇳",
+  "Asia/Hong_Kong": "🇭🇰",
+  "Asia/Taipei": "🇹🇼",
+  "Asia/Singapore": "🇸🇬",
+  "Asia/Bangkok": "🇹🇭",
+  "Asia/Jakarta": "🇮🇩",
+  "Asia/Dubai": "🇦🇪",
+  "Asia/Kolkata": "🇮🇳",
+  "Asia/Calcutta": "🇮🇳",
+  "Asia/Jerusalem": "🇮🇱",
+  "Asia/Riyadh": "🇸🇦",
+  "Australia/Sydney": "🇦🇺",
+  "Pacific/Auckland": "🇳🇿",
+  "Pacific/Honolulu": "🌺",
+
+  // Europe
+  "Europe/Paris": "🇫🇷",
+  "Europe/London": "🇬🇧",
+  "Europe/Berlin": "🇩🇪",
+  "Europe/Rome": "🇮🇹",
+  "Europe/Madrid": "🇪🇸",
+  "Europe/Amsterdam": "🇳🇱",
+  "Europe/Brussels": "🇧🇪",
+  "Europe/Zurich": "🇨🇭",
+  "Europe/Vienna": "🇦🇹",
+  "Europe/Dublin": "🇮🇪",
+  "Europe/Lisbon": "🇵🇹",
+  "Europe/Stockholm": "🇸🇪",
+  "Europe/Oslo": "🇳🇴",
+  "Europe/Copenhagen": "🇩🇰",
+  "Europe/Warsaw": "🇵🇱",
+  "Europe/Prague": "🇨🇿",
+  "Europe/Athens": "🇬🇷",
+  "Europe/Istanbul": "🇹🇷",
+  "Europe/Moscow": "🇷🇺",
+
+  // Americas
+  "America/New_York": "🇺🇸",
+  "America/Los_Angeles": "🇺🇸",
+  "America/Chicago": "🇺🇸",
+  "America/Denver": "🇺🇸",
+  "America/Phoenix": "🇺🇸",
+  "America/Anchorage": "🐻",
+  "America/Toronto": "🇨🇦",
+  "America/Vancouver": "🇨🇦",
+  "America/Sao_Paulo": "🇧🇷",
+  "America/Buenos_Aires": "🇦🇷",
+  "America/Bogota": "🇨🇴",
+  "America/Lima": "🇵🇪",
+  "America/Santiago": "🇨🇱",
+  "America/Havana": "🇨🇺",
+
+  // Africa
+  "Africa/Cairo": "🇪🇬",
+  "Africa/Johannesburg": "🇿🇦",
+  "Africa/Lagos": "🇳🇬",
+  "Africa/Nairobi": "🇰🇪"
+}
+
+var CITY_CODES = {
+  // Mexico
+  "America/Mexico_City": "MEX",
+  "America/Cancun": "CUN",
+  "America/Tijuana": "TIJ",
+  "America/Monterrey": "MTY",
+  "America/Hermosillo": "HMO",
+  "America/Mazatlan": "MZT",
+  "America/Chihuahua": "CUU",
+  "America/Merida": "MID",
+  "America/Matamoros": "MAM",
+  "America/Bahia_Banderas": "PVR",
+  "America/Ciudad_Juarez": "CJS",
+  "Mexico/BajaNorte": "TIJ",
+  "Mexico/BajaSur": "LAP",
+  "Mexico/General": "MEX",
+
+  // Europe
+  "Europe/Paris": "PAR",
+  "Europe/London": "LON",
+  "Europe/Berlin": "BER",
+  "Europe/Rome": "ROM",
+  "Europe/Madrid": "MAD",
+  "Europe/Amsterdam": "AMS",
+  "Europe/Brussels": "BRU",
+  "Europe/Zurich": "ZRH",
+  "Europe/Vienna": "VIE",
+  "Europe/Dublin": "DUB",
+  "Europe/Lisbon": "LIS",
+  "Europe/Stockholm": "STO",
+  "Europe/Oslo": "OSL",
+  "Europe/Copenhagen": "CPH",
+  "Europe/Warsaw": "WAW",
+  "Europe/Prague": "PRG",
+  "Europe/Athens": "ATH",
+  "Europe/Istanbul": "IST",
+  "Europe/Moscow": "MOW",
+
+  // Asia & Pacific
+  "Asia/Seoul": "SEL",
+  "Asia/Tokyo": "TYO",
+  "Asia/Shanghai": "SHA",
+  "Asia/Hong_Kong": "HKG",
+  "Asia/Taipei": "TPE",
+  "Asia/Singapore": "SIN",
+  "Asia/Bangkok": "BKK",
+  "Asia/Jakarta": "JKT",
+  "Asia/Dubai": "DXB",
+  "Asia/Kolkata": "DEL",
+  "Asia/Calcutta": "CCU",
+  "Asia/Jerusalem": "JRS",
+  "Asia/Riyadh": "RUH",
+  "Australia/Sydney": "SYD",
+  "Pacific/Auckland": "AKL",
+  "Pacific/Honolulu": "HNL",
+
+  // Americas
+  "America/New_York": "NYC",
+  "America/Los_Angeles": "LAX",
+  "America/Chicago": "CHI",
+  "America/Denver": "DEN",
+  "America/Phoenix": "PHX",
+  "America/Anchorage": "ANC",
+  "America/Toronto": "YTO",
+  "America/Vancouver": "YVR",
+  "America/Sao_Paulo": "SAO",
+  "America/Buenos_Aires": "BUE",
+  "America/Bogota": "BOG",
+  "America/Lima": "LIM",
+  "America/Santiago": "SCL",
+
+  // Africa
+  "Africa/Cairo": "CAI",
+  "Africa/Johannesburg": "JNB",
+  "Africa/Lagos": "LOS",
+  "Africa/Nairobi": "NBO"
 }
 
 function friendlyName(id) {
@@ -70,6 +172,27 @@ function regionName(id) {
 
 function cityIcon(id) {
   return CITY_ICONS[id] || "🌐"
+}
+
+function cityCode(id) {
+  if (CITY_CODES[id]) return CITY_CODES[id]
+  var name = friendlyName(id)
+  var letters = name.replace(/[^a-zA-Z]/g, "")
+  if (letters.length >= 3) return letters.substring(0, 3).toUpperCase()
+  return name.toUpperCase()
+}
+
+function formatUtcOffset(offsetStr) {
+  if (!offsetStr || typeof offsetStr !== "string") return ""
+  var str = offsetStr.trim()
+  if (str.length < 5) return str
+  var sign = str.charAt(0)
+  var hours = parseInt(str.substring(1, 3), 10)
+  var mins = str.substring(3, 5)
+  if (mins === "00") {
+    return "UTC" + sign + hours
+  }
+  return "UTC" + sign + hours + ":" + mins
 }
 
 function parseTimesLine(line) {

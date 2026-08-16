@@ -22,10 +22,17 @@ Panel {
   readonly property string contentFontFamily: bar ? bar.fontFamily : Style.font.family
   readonly property color subtleForeground: Qt.rgba(contentForeground.r, contentForeground.g, contentForeground.b, 0.65)
 
-  property var zoneIds: ["Europe/Paris", "Asia/Seoul", "America/New_York", "America/Los_Angeles"]
-  property var zoneMeta: ({})
+  property var zoneIds: ["Europe/Paris", "Asia/Seoul", "America/Mexico_City"]
+  property var zoneMeta: ({
+    "Europe/Paris": { "emoji": "🇫🇷", "label": "Paris" },
+    "Asia/Seoul": { "emoji": "🇰🇷", "label": "Seoul" },
+    "America/Mexico_City": { "emoji": "🇲🇽", "label": "Mexico City" }
+  })
   property bool use24h: true
   property string keybind: "SUPER + I"
+  property string barStyle: "compact"
+  property bool showGlobeIcon: false
+  property bool showDayBadge: true
   property bool settingsLoaded: false
 
   property bool settingsOpen: false
@@ -111,10 +118,13 @@ Panel {
     var parsed = {}
     try { parsed = JSON.parse(json || "{}") } catch (e) { parsed = {} }
     if (Array.isArray(parsed.zoneIds) && parsed.zoneIds.length > 0) root.zoneIds = parsed.zoneIds
-    else if (!Array.isArray(parsed.zoneIds) || parsed.zoneIds.length === 0) root.zoneIds = ["Europe/Paris", "Asia/Seoul", "America/New_York", "America/Los_Angeles"]
+    else root.zoneIds = ["Europe/Paris", "Asia/Seoul", "America/Mexico_City"]
     if (parsed.zoneMeta && typeof parsed.zoneMeta === "object") root.zoneMeta = parsed.zoneMeta
     if (typeof parsed.use24h === "boolean") root.use24h = parsed.use24h
     if (typeof parsed.keybind === "string" && parsed.keybind !== "") root.keybind = parsed.keybind
+    if (typeof parsed.barStyle === "string" && parsed.barStyle !== "") root.barStyle = parsed.barStyle
+    if (typeof parsed.showGlobeIcon === "boolean") root.showGlobeIcon = parsed.showGlobeIcon
+    if (typeof parsed.showDayBadge === "boolean") root.showDayBadge = parsed.showDayBadge
     root.settingsLoaded = true
     root.refreshTimes()
   }
@@ -128,13 +138,19 @@ Panel {
       zoneIds: root.zoneIds,
       zoneMeta: root.zoneMeta,
       use24h: root.use24h,
-      keybind: root.keybind
+      keybind: root.keybind,
+      barStyle: root.barStyle,
+      showGlobeIcon: root.showGlobeIcon,
+      showDayBadge: root.showDayBadge
     }, null, 2) + "\n")
   }
 
   onUse24hChanged: scheduleSettingsSave()
   onKeybindChanged: scheduleSettingsSave()
   onZoneMetaChanged: scheduleSettingsSave()
+  onBarStyleChanged: scheduleSettingsSave()
+  onShowGlobeIconChanged: scheduleSettingsSave()
+  onShowDayBadgeChanged: scheduleSettingsSave()
 
   Component.onCompleted: {
     ensureDirsProc.running = true
@@ -666,6 +682,51 @@ Panel {
             visible: root.settingsOpen
             width: bodyFlick.width
             spacing: Style.space(14)
+
+            PanelSectionHeader {
+              text: "BAR DISPLAY"
+              foreground: root.contentForeground
+              fontFamily: root.contentFontFamily
+            }
+
+            Dropdown {
+              width: parent.width
+              label: "Bar display style"
+              value: root.barStyle
+              options: [
+                { value: "compact", label: "Compact (🇫🇷 09:22 · 🇰🇷 16:22 · 🇲🇽 01:22)" },
+                { value: "codes", label: "Airport Codes (PAR · SEL · MEX)" },
+                { value: "names", label: "City Names (Paris · Seoul · Mexico)" },
+                { value: "cycle", label: "Single Zone (Cycling every 5s)" },
+                { value: "icon", label: "Icon Only (󰖟)" }
+              ]
+              foreground: root.contentForeground
+              accent: Color.accent
+              fontFamily: root.contentFontFamily
+              onChanged: function(val) { root.barStyle = val }
+            }
+
+            Toggle {
+              width: parent.width
+              label: "Show globe icon in bar"
+              description: "Show 󰖟 prefix icon before timezone clocks"
+              checked: root.showGlobeIcon
+              foreground: root.contentForeground
+              fontFamily: root.contentFontFamily
+              onClicked: root.showGlobeIcon = !root.showGlobeIcon
+            }
+
+            Toggle {
+              width: parent.width
+              label: "Show day difference badge"
+              description: "Show +1 / −1 when a city is on a different day"
+              checked: root.showDayBadge
+              foreground: root.contentForeground
+              fontFamily: root.contentFontFamily
+              onClicked: root.showDayBadge = !root.showDayBadge
+            }
+
+            PanelSeparator { foreground: root.contentForeground }
 
             PanelSectionHeader {
               text: "CITIES"
