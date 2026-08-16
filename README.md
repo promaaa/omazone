@@ -61,8 +61,9 @@ This deletes the plugin and cleans up its bar widget automatically. Your tracked
   - Middle click: cycle bar display styles (`Compact` -> `Codes` -> `Names` -> `Cycle` -> `Icon`)
   - Right click: toggle 12h/24h time format
 - **Show/hide bar widget**:
+  - In the panel header: click the eye icon (󰈈 / 󰈉) to instantly toggle bar visibility with one click
   - In Settings: toggle "Show on status bar"
-  - Via CLI: `omarchy-shell shell io.github.weedwhitesandwine.omazone toggleBar` (or `hideBar` / `showBar`)
+  - Via CLI: `omarchy-shell io.github.weedwhitesandwine.omazone toggleBar` (or `hideBar` / `showBar`)
 - **Click the gear icon (⚙)** in the panel header to open settings:
   - **Bar Display** — toggle bar visibility, choose display style, toggle globe icon prefix, or toggle +1/−1 day offset badges.
   - **Cities** — search and check off any number of timezones to track.

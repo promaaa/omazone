@@ -399,18 +399,36 @@ Panel {
           }
 
           Item {
-            width: headerRow.width - titleText.width - gearBtn.width
+            width: Math.max(0, headerRow.width - titleText.width - headerActions.width)
             height: 1
           }
 
-          PanelActionButton {
-            id: gearBtn
+          Row {
+            id: headerActions
             anchors.verticalCenter: parent.verticalCenter
-            iconText: root.settingsOpen ? "✕" : "󰒓"
-            tooltipText: root.settingsOpen ? "Back to cities" : "Settings"
-            foreground: root.contentForeground
-            fontFamily: root.contentFontFamily
-            onClicked: root.settingsOpen = !root.settingsOpen
+            spacing: Style.space(4)
+
+            PanelActionButton {
+              id: visBtn
+              iconText: root.showOnBar ? "󰈈" : "󰈉"
+              tooltipText: root.showOnBar ? "Hide from status bar" : "Show on status bar"
+              foreground: root.showOnBar ? root.contentForeground : Qt.rgba(root.contentForeground.r, root.contentForeground.g, root.contentForeground.b, 0.45)
+              fontFamily: root.contentFontFamily
+              onClicked: {
+                root.showOnBar = !root.showOnBar
+                root.scheduleSettingsSave()
+              }
+            }
+
+            PanelActionButton {
+              id: gearBtn
+              anchors.verticalCenter: parent.verticalCenter
+              iconText: root.settingsOpen ? "✕" : "󰒓"
+              tooltipText: root.settingsOpen ? "Back to cities" : "Settings"
+              foreground: root.contentForeground
+              fontFamily: root.contentFontFamily
+              onClicked: root.settingsOpen = !root.settingsOpen
+            }
           }
         }
 
